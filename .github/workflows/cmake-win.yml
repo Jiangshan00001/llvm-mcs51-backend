@@ -25,6 +25,7 @@ jobs:
     
     - name: Configure vc
       shell: pwsh
+      run: ls
       run: ./.github/workflows/vcbuild.cmd -arch=x64 -host_arch=x64
 
     - name: Configure CMake
