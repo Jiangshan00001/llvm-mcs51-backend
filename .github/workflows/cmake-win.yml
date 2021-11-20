@@ -27,6 +27,7 @@ jobs:
       
     - name: move mcs51 to llvm tree
       run: |
+           ls
            cp ./llvm/* ./llvm1300/llvm/
            cd ./llvm1300;
     
