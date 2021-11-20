@@ -43,7 +43,7 @@ jobs:
       run:  |
             ls
             cd ./llvm1300/llvm
-            cmake -B ./build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/LLVMBIN/ -DLLVM_TARGETS_TO_BUILD=X86,AVR,MCS51 -DLLVM_OPTIMIZED_TABLEGEN=1 -DLLVM_ENABLE_PROJECTS=clang
+            cmake -B ./build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/LLVMBIN/ -DLLVM_TARGETS_TO_BUILD="X86,AVR,MCS51"  -DLLVM_OPTIMIZED_TABLEGEN=1 -DLLVM_ENABLE_PROJECTS=clang
 
     - name: Build
       # Build your program with the given configuration
@@ -52,6 +52,7 @@ jobs:
            cd ./llvm1300/llvm
            ls build/
            cmake --build ./build --config ${{env.BUILD_TYPE}}
+           make install
 
     - name: Test
       working-directory: ${{github.workspace}}/build
