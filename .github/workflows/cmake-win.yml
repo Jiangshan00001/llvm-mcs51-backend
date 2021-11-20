@@ -43,7 +43,7 @@ jobs:
       run:  |
             ls
             cd ./llvm1300/llvm
-            cmake -B ./build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/LLVMBIN/ -DLLVM_TARGETS_TO_BUILD=AVR  -DLLVM_OPTIMIZED_TABLEGEN=1 -DLLVM_ENABLE_PROJECTS=clang -Thost=x64 -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=MCS51
+            cmake -B ./build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/LLVMBIN/ -DLLVM_TARGETS_TO_BUILD=X86  -DLLVM_OPTIMIZED_TABLEGEN=1 -DLLVM_ENABLE_PROJECTS=clang -Thost=x64 -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=MCS51
 
     - name: Build
       # Build your program with the given configuration
@@ -52,10 +52,18 @@ jobs:
            cd ./llvm1300/llvm
            ls build/
            cmake --build ./build --config ${{env.BUILD_TYPE}}
-           make install
+           msbuild ./build/INSTALL.vcxproj  -p:Configuration=${{env.BUILD_TYPE}}
 
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@3.7.1
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-bin-win # The branch the action should deploy to.
+        FOLDER: ${{github.workspace}}/LLVMBIN/ # The folder the action should deploy.
+        CLEAN: true # Automatically remove deleted files from the deploy branch
+        SINGLE_COMMIT: true
     - name: Test
-      working-directory: ${{github.workspace}}/build
+      working-directory: ${{github.workspace}}/llvm1300/llvm/build
       # Execute tests defined by the CMake configuration.  
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C ${{env.BUILD_TYPE}}
