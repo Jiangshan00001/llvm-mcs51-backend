@@ -1,4 +1,4 @@
-//===-- AVRAsmBackend.cpp - AVR Asm Backend  ------------------------------===//
+//===-- MCS51AsmBackend.cpp - MCS51 Asm Backend  ------------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,13 +6,13 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// This file implements the AVRAsmBackend class.
+// This file implements the MCS51AsmBackend class.
 //
 //===----------------------------------------------------------------------===//
 
-#include "MCTargetDesc/AVRAsmBackend.h"
-#include "MCTargetDesc/AVRFixupKinds.h"
-#include "MCTargetDesc/AVRMCTargetDesc.h"
+#include "MCTargetDesc/MCS51AsmBackend.h"
+#include "MCTargetDesc/MCS51FixupKinds.h"
+#include "MCTargetDesc/MCS51MCTargetDesc.h"
 #include "llvm/MC/MCAsmBackend.h"
 #include "llvm/MC/MCAssembler.h"
 #include "llvm/MC/MCContext.h"
@@ -81,7 +81,7 @@ static void adjustBranch(unsigned Size, const MCFixup &Fixup, uint64_t &Value,
   unsigned_width(Size + 1, Value, std::string("branch target"), Fixup, Ctx);
 
   // Rightshifts the value by one.
-  AVR::fixups::adjustBranchTarget(Value);
+  MCS51::fixups::adjustBranchTarget(Value);
 }
 
 /// Adjusts the value of a relative branch target before fixup application.
@@ -92,7 +92,7 @@ static void adjustRelativeBranch(unsigned Size, const MCFixup &Fixup,
   signed_width(Size + 1, Value, std::string("branch target"), Fixup, Ctx);
 
   // Rightshifts the value by one.
-  AVR::fixups::adjustBranchTarget(Value);
+  MCS51::fixups::adjustBranchTarget(Value);
 }
 
 /// 22-bit absolute fixup.
@@ -239,104 +239,104 @@ static void ms8(unsigned Size, const MCFixup &Fixup, uint64_t &Value,
 namespace llvm {
 
 // Prepare value for the target space for it
-void AVRAsmBackend::adjustFixupValue(const MCFixup &Fixup,
+void MCS51AsmBackend::adjustFixupValue(const MCFixup &Fixup,
                                      const MCValue &Target,
                                      uint64_t &Value,
                                      MCContext *Ctx) const {
   // The size of the fixup in bits.
-  uint64_t Size = AVRAsmBackend::getFixupKindInfo(Fixup.getKind()).TargetSize;
+  uint64_t Size = MCS51AsmBackend::getFixupKindInfo(Fixup.getKind()).TargetSize;
 
   unsigned Kind = Fixup.getKind();
   switch (Kind) {
   default:
     llvm_unreachable("unhandled fixup");
-  case AVR::fixup_7_pcrel:
+  case MCS51::fixup_7_pcrel:
     adjust::fixup_7_pcrel(Size, Fixup, Value, Ctx);
     break;
-  case AVR::fixup_13_pcrel:
+  case MCS51::fixup_13_pcrel:
     adjust::fixup_13_pcrel(Size, Fixup, Value, Ctx);
     break;
-  case AVR::fixup_call:
+  case MCS51::fixup_call:
     adjust::fixup_call(Size, Fixup, Value, Ctx);
     break;
-  case AVR::fixup_ldi:
+  case MCS51::fixup_ldi:
     adjust::ldi::fixup(Size, Fixup, Value, Ctx);
     break;
-  case AVR::fixup_lo8_ldi:
+  case MCS51::fixup_lo8_ldi:
     adjust::ldi::lo8(Size, Fixup, Value, Ctx);
     break;
-  case AVR::fixup_lo8_ldi_pm:
-  case AVR::fixup_lo8_ldi_gs:
+  case MCS51::fixup_lo8_ldi_pm:
+  case MCS51::fixup_lo8_ldi_gs:
     adjust::pm(Value);
     adjust::ldi::lo8(Size, Fixup, Value, Ctx);
     break;
-  case AVR::fixup_hi8_ldi:
+  case MCS51::fixup_hi8_ldi:
     adjust::ldi::hi8(Size, Fixup, Value, Ctx);
     break;
-  case AVR::fixup_hi8_ldi_pm:
-  case AVR::fixup_hi8_ldi_gs:
+  case MCS51::fixup_hi8_ldi_pm:
+  case MCS51::fixup_hi8_ldi_gs:
     adjust::pm(Value);
     adjust::ldi::hi8(Size, Fixup, Value, Ctx);
     break;
-  case AVR::fixup_hh8_ldi:
-  case AVR::fixup_hh8_ldi_pm:
-    if (Kind == AVR::fixup_hh8_ldi_pm) adjust::pm(Value);
+  case MCS51::fixup_hh8_ldi:
+  case MCS51::fixup_hh8_ldi_pm:
+    if (Kind == MCS51::fixup_hh8_ldi_pm) adjust::pm(Value);
 
     adjust::ldi::hh8(Size, Fixup, Value, Ctx);
     break;
-  case AVR::fixup_ms8_ldi:
+  case MCS51::fixup_ms8_ldi:
     adjust::ldi::ms8(Size, Fixup, Value, Ctx);
     break;
 
-  case AVR::fixup_lo8_ldi_neg:
-  case AVR::fixup_lo8_ldi_pm_neg:
-    if (Kind == AVR::fixup_lo8_ldi_pm_neg) adjust::pm(Value);
+  case MCS51::fixup_lo8_ldi_neg:
+  case MCS51::fixup_lo8_ldi_pm_neg:
+    if (Kind == MCS51::fixup_lo8_ldi_pm_neg) adjust::pm(Value);
 
     adjust::ldi::neg(Value);
     adjust::ldi::lo8(Size, Fixup, Value, Ctx);
     break;
-  case AVR::fixup_hi8_ldi_neg:
-  case AVR::fixup_hi8_ldi_pm_neg:
-    if (Kind == AVR::fixup_hi8_ldi_pm_neg) adjust::pm(Value);
+  case MCS51::fixup_hi8_ldi_neg:
+  case MCS51::fixup_hi8_ldi_pm_neg:
+    if (Kind == MCS51::fixup_hi8_ldi_pm_neg) adjust::pm(Value);
 
     adjust::ldi::neg(Value);
     adjust::ldi::hi8(Size, Fixup, Value, Ctx);
     break;
-  case AVR::fixup_hh8_ldi_neg:
-  case AVR::fixup_hh8_ldi_pm_neg:
-    if (Kind == AVR::fixup_hh8_ldi_pm_neg) adjust::pm(Value);
+  case MCS51::fixup_hh8_ldi_neg:
+  case MCS51::fixup_hh8_ldi_pm_neg:
+    if (Kind == MCS51::fixup_hh8_ldi_pm_neg) adjust::pm(Value);
 
     adjust::ldi::neg(Value);
     adjust::ldi::hh8(Size, Fixup, Value, Ctx);
     break;
-  case AVR::fixup_ms8_ldi_neg:
+  case MCS51::fixup_ms8_ldi_neg:
     adjust::ldi::neg(Value);
     adjust::ldi::ms8(Size, Fixup, Value, Ctx);
     break;
-  case AVR::fixup_16:
+  case MCS51::fixup_16:
     adjust::unsigned_width(16, Value, std::string("port number"), Fixup, Ctx);
 
     Value &= 0xffff;
     break;
-  case AVR::fixup_16_pm:
+  case MCS51::fixup_16_pm:
     Value >>= 1; // Flash addresses are always shifted.
     adjust::unsigned_width(16, Value, std::string("port number"), Fixup, Ctx);
 
     Value &= 0xffff;
     break;
 
-  case AVR::fixup_6:
+  case MCS51::fixup_6:
     adjust::fixup_6(Fixup, Value, Ctx);
     break;
-  case AVR::fixup_6_adiw:
+  case MCS51::fixup_6_adiw:
     adjust::fixup_6_adiw(Fixup, Value, Ctx);
     break;
 
-  case AVR::fixup_port5:
+  case MCS51::fixup_port5:
     adjust::fixup_port5(Fixup, Value, Ctx);
     break;
 
-  case AVR::fixup_port6:
+  case MCS51::fixup_port6:
     adjust::fixup_port6(Fixup, Value, Ctx);
     break;
 
@@ -354,11 +354,11 @@ void AVRAsmBackend::adjustFixupValue(const MCFixup &Fixup,
 }
 
 std::unique_ptr<MCObjectTargetWriter>
-AVRAsmBackend::createObjectTargetWriter() const {
-  return createAVRELFObjectWriter(MCELFObjectTargetWriter::getOSABI(OSType));
+MCS51AsmBackend::createObjectTargetWriter() const {
+  return createMCS51ELFObjectWriter(MCELFObjectTargetWriter::getOSABI(OSType));
 }
 
-void AVRAsmBackend::applyFixup(const MCAssembler &Asm, const MCFixup &Fixup,
+void MCS51AsmBackend::applyFixup(const MCAssembler &Asm, const MCFixup &Fixup,
                                const MCValue &Target,
                                MutableArrayRef<char> Data, uint64_t Value,
                                bool IsResolved,
@@ -387,12 +387,12 @@ void AVRAsmBackend::applyFixup(const MCAssembler &Asm, const MCFixup &Fixup,
   }
 }
 
-MCFixupKindInfo const &AVRAsmBackend::getFixupKindInfo(MCFixupKind Kind) const {
-  // NOTE: Many AVR fixups work on sets of non-contignous bits. We work around
+MCFixupKindInfo const &MCS51AsmBackend::getFixupKindInfo(MCFixupKind Kind) const {
+  // NOTE: Many MCS51 fixups work on sets of non-contignous bits. We work around
   // this by saying that the fixup is the size of the entire instruction.
-  const static MCFixupKindInfo Infos[AVR::NumTargetFixupKinds] = {
+  const static MCFixupKindInfo Infos[MCS51::NumTargetFixupKinds] = {
       // This table *must* be in same the order of fixup_* kinds in
-      // AVRFixupKinds.h.
+      // MCS51FixupKinds.h.
       //
       // name                    offset  bits  flags
       {"fixup_32", 0, 32, 0},
@@ -455,7 +455,7 @@ MCFixupKindInfo const &AVRAsmBackend::getFixupKindInfo(MCFixupKind Kind) const {
   return Infos[Kind - FirstTargetFixupKind];
 }
 
-bool AVRAsmBackend::writeNopData(raw_ostream &OS, uint64_t Count) const {
+bool MCS51AsmBackend::writeNopData(raw_ostream &OS, uint64_t Count) const {
   // If the count is not 2-byte aligned, we must be writing data into the text
   // section (otherwise we have unaligned instructions, and thus have far
   // bigger problems), so just write zeros instead.
@@ -465,23 +465,23 @@ bool AVRAsmBackend::writeNopData(raw_ostream &OS, uint64_t Count) const {
   return true;
 }
 
-bool AVRAsmBackend::shouldForceRelocation(const MCAssembler &Asm,
+bool MCS51AsmBackend::shouldForceRelocation(const MCAssembler &Asm,
                                           const MCFixup &Fixup,
                                           const MCValue &Target) {
   switch ((unsigned) Fixup.getKind()) {
   default: return false;
   // Fixups which should always be recorded as relocations.
-  case AVR::fixup_7_pcrel:
-  case AVR::fixup_13_pcrel:
-  case AVR::fixup_call:
+  case MCS51::fixup_7_pcrel:
+  case MCS51::fixup_13_pcrel:
+  case MCS51::fixup_call:
     return true;
   }
 }
 
-MCAsmBackend *createAVRAsmBackend(const Target &T, const MCSubtargetInfo &STI,
+MCAsmBackend *createMCS51AsmBackend(const Target &T, const MCSubtargetInfo &STI,
                                   const MCRegisterInfo &MRI,
                                   const llvm::MCTargetOptions &TO) {
-  return new AVRAsmBackend(STI.getTargetTriple().getOS());
+  return new MCS51AsmBackend(STI.getTargetTriple().getOS());
 }
 
 } // end of namespace llvm

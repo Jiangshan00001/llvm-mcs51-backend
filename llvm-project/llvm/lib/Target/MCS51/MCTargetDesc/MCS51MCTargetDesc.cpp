@@ -1,4 +1,4 @@
-//===-- AVRMCTargetDesc.cpp - AVR Target Descriptions ---------------------===//
+//===-- MCS51MCTargetDesc.cpp - MCS51 Target Descriptions ---------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,17 +6,17 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// This file provides AVR specific target descriptions.
+// This file provides MCS51 specific target descriptions.
 //
 //===----------------------------------------------------------------------===//
 
-#include "AVRELFStreamer.h"
-#include "AVRInstPrinter.h"
-#include "AVRMCAsmInfo.h"
-#include "AVRMCELFStreamer.h"
-#include "AVRMCTargetDesc.h"
-#include "AVRTargetStreamer.h"
-#include "TargetInfo/AVRTargetInfo.h"
+#include "MCS51ELFStreamer.h"
+#include "MCS51InstPrinter.h"
+#include "MCS51MCAsmInfo.h"
+#include "MCS51MCELFStreamer.h"
+#include "MCS51MCTargetDesc.h"
+#include "MCS51TargetStreamer.h"
+#include "TargetInfo/MCS51TargetInfo.h"
 
 #include "llvm/MC/MCAsmBackend.h"
 #include "llvm/MC/MCELFStreamer.h"
@@ -27,42 +27,42 @@
 #include "llvm/Support/TargetRegistry.h"
 
 #define GET_INSTRINFO_MC_DESC
-#include "AVRGenInstrInfo.inc"
+#include "MCS51GenInstrInfo.inc"
 
 #define GET_SUBTARGETINFO_MC_DESC
-#include "AVRGenSubtargetInfo.inc"
+#include "MCS51GenSubtargetInfo.inc"
 
 #define GET_REGINFO_MC_DESC
-#include "AVRGenRegisterInfo.inc"
+#include "MCS51GenRegisterInfo.inc"
 
 using namespace llvm;
 
-MCInstrInfo *llvm::createAVRMCInstrInfo() {
+MCInstrInfo *llvm::createMCS51MCInstrInfo() {
   MCInstrInfo *X = new MCInstrInfo();
-  InitAVRMCInstrInfo(X);
+  InitMCS51MCInstrInfo(X);
 
   return X;
 }
 
-static MCRegisterInfo *createAVRMCRegisterInfo(const Triple &TT) {
+static MCRegisterInfo *createMCS51MCRegisterInfo(const Triple &TT) {
   MCRegisterInfo *X = new MCRegisterInfo();
-  InitAVRMCRegisterInfo(X, 0);
+  InitMCS51MCRegisterInfo(X, 0);
 
   return X;
 }
 
-static MCSubtargetInfo *createAVRMCSubtargetInfo(const Triple &TT,
+static MCSubtargetInfo *createMCS51MCSubtargetInfo(const Triple &TT,
                                                  StringRef CPU, StringRef FS) {
-  return createAVRMCSubtargetInfoImpl(TT, CPU, /*TuneCPU*/ CPU, FS);
+  return createMCS51MCSubtargetInfoImpl(TT, CPU, /*TuneCPU*/ CPU, FS);
 }
 
-static MCInstPrinter *createAVRMCInstPrinter(const Triple &T,
+static MCInstPrinter *createMCS51MCInstPrinter(const Triple &T,
                                              unsigned SyntaxVariant,
                                              const MCAsmInfo &MAI,
                                              const MCInstrInfo &MII,
                                              const MCRegisterInfo &MRI) {
   if (SyntaxVariant == 0) {
-    return new AVRInstPrinter(MAI, MII, MRI);
+    return new MCS51InstPrinter(MAI, MII, MRI);
   }
 
   return nullptr;
@@ -78,50 +78,50 @@ static MCStreamer *createMCStreamer(const Triple &T, MCContext &Context,
 }
 
 static MCTargetStreamer *
-createAVRObjectTargetStreamer(MCStreamer &S, const MCSubtargetInfo &STI) {
-  return new AVRELFStreamer(S, STI);
+createMCS51ObjectTargetStreamer(MCStreamer &S, const MCSubtargetInfo &STI) {
+  return new MCS51ELFStreamer(S, STI);
 }
 
 static MCTargetStreamer *createMCAsmTargetStreamer(MCStreamer &S,
                                                    formatted_raw_ostream &OS,
                                                    MCInstPrinter *InstPrint,
                                                    bool isVerboseAsm) {
-  return new AVRTargetAsmStreamer(S);
+  return new MCS51TargetAsmStreamer(S);
 }
 
-extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeAVRTargetMC() {
+extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeMCS51TargetMC() {
   // Register the MC asm info.
-  RegisterMCAsmInfo<AVRMCAsmInfo> X(getTheAVRTarget());
+  RegisterMCAsmInfo<MCS51MCAsmInfo> X(getTheMCS51Target());
 
   // Register the MC instruction info.
-  TargetRegistry::RegisterMCInstrInfo(getTheAVRTarget(), createAVRMCInstrInfo);
+  TargetRegistry::RegisterMCInstrInfo(getTheMCS51Target(), createMCS51MCInstrInfo);
 
   // Register the MC register info.
-  TargetRegistry::RegisterMCRegInfo(getTheAVRTarget(), createAVRMCRegisterInfo);
+  TargetRegistry::RegisterMCRegInfo(getTheMCS51Target(), createMCS51MCRegisterInfo);
 
   // Register the MC subtarget info.
-  TargetRegistry::RegisterMCSubtargetInfo(getTheAVRTarget(),
-                                          createAVRMCSubtargetInfo);
+  TargetRegistry::RegisterMCSubtargetInfo(getTheMCS51Target(),
+                                          createMCS51MCSubtargetInfo);
 
   // Register the MCInstPrinter.
-  TargetRegistry::RegisterMCInstPrinter(getTheAVRTarget(),
-                                        createAVRMCInstPrinter);
+  TargetRegistry::RegisterMCInstPrinter(getTheMCS51Target(),
+                                        createMCS51MCInstPrinter);
 
   // Register the MC Code Emitter
-  TargetRegistry::RegisterMCCodeEmitter(getTheAVRTarget(), createAVRMCCodeEmitter);
+  TargetRegistry::RegisterMCCodeEmitter(getTheMCS51Target(), createMCS51MCCodeEmitter);
 
   // Register the obj streamer
-  TargetRegistry::RegisterELFStreamer(getTheAVRTarget(), createMCStreamer);
+  TargetRegistry::RegisterELFStreamer(getTheMCS51Target(), createMCStreamer);
 
   // Register the obj target streamer.
-  TargetRegistry::RegisterObjectTargetStreamer(getTheAVRTarget(),
-                                               createAVRObjectTargetStreamer);
+  TargetRegistry::RegisterObjectTargetStreamer(getTheMCS51Target(),
+                                               createMCS51ObjectTargetStreamer);
 
   // Register the asm target streamer.
-  TargetRegistry::RegisterAsmTargetStreamer(getTheAVRTarget(),
+  TargetRegistry::RegisterAsmTargetStreamer(getTheMCS51Target(),
                                             createMCAsmTargetStreamer);
 
   // Register the asm backend (as little endian).
-  TargetRegistry::RegisterMCAsmBackend(getTheAVRTarget(), createAVRAsmBackend);
+  TargetRegistry::RegisterMCAsmBackend(getTheMCS51Target(), createMCS51AsmBackend);
 }
 

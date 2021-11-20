@@ -1,4 +1,4 @@
-//===-- AVRMCCodeEmitter.h - Convert AVR Code to Machine Code -------------===//
+//===-- MCS51MCCodeEmitter.h - Convert MCS51 Code to Machine Code -------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,21 +6,21 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// This file defines the AVRMCCodeEmitter class.
+// This file defines the MCS51MCCodeEmitter class.
 //
 //===----------------------------------------------------------------------===//
 //
 
-#ifndef LLVM_AVR_CODE_EMITTER_H
-#define LLVM_AVR_CODE_EMITTER_H
+#ifndef LLVM_MCS51_CODE_EMITTER_H
+#define LLVM_MCS51_CODE_EMITTER_H
 
-#include "AVRFixupKinds.h"
+#include "MCS51FixupKinds.h"
 
 #include "llvm/MC/MCCodeEmitter.h"
 #include "llvm/Support/DataTypes.h"
 
 #define GET_INSTRINFO_OPERAND_TYPES_ENUM
-#include "AVRGenInstrInfo.inc"
+#include "MCS51GenInstrInfo.inc"
 
 namespace llvm {
 
@@ -33,10 +33,10 @@ class MCOperand;
 class MCSubtargetInfo;
 class raw_ostream;
 
-/// Writes AVR machine code to a stream.
-class AVRMCCodeEmitter : public MCCodeEmitter {
+/// Writes MCS51 machine code to a stream.
+class MCS51MCCodeEmitter : public MCCodeEmitter {
 public:
-  AVRMCCodeEmitter(const MCInstrInfo &MCII, MCContext &Ctx)
+  MCS51MCCodeEmitter(const MCInstrInfo &MCII, MCContext &Ctx)
       : MCII(MCII), Ctx(Ctx) {}
 
 private:
@@ -47,7 +47,7 @@ private:
                                 const MCSubtargetInfo &STI) const;
 
   /// Gets the encoding for a conditional branch target.
-  template <AVR::Fixups Fixup>
+  template <MCS51::Fixups Fixup>
   unsigned encodeRelCondBrTarget(const MCInst &MI, unsigned OpNo,
                                  SmallVectorImpl<MCFixup> &Fixups,
                                  const MCSubtargetInfo &STI) const;
@@ -69,7 +69,7 @@ private:
 
   /// Encodes an immediate value with a given fixup.
   /// \tparam Offset The offset into the instruction for the fixup.
-  template <AVR::Fixups Fixup, unsigned Offset>
+  template <MCS51::Fixups Fixup, unsigned Offset>
   unsigned encodeImm(const MCInst &MI, unsigned OpNo,
                      SmallVectorImpl<MCFixup> &Fixups,
                      const MCSubtargetInfo &STI) const;
@@ -102,8 +102,8 @@ private:
                          SmallVectorImpl<MCFixup> &Fixups,
                          const MCSubtargetInfo &STI) const override;
 
-  AVRMCCodeEmitter(const AVRMCCodeEmitter &) = delete;
-  void operator=(const AVRMCCodeEmitter &) = delete;
+  MCS51MCCodeEmitter(const MCS51MCCodeEmitter &) = delete;
+  void operator=(const MCS51MCCodeEmitter &) = delete;
 
   const MCInstrInfo &MCII;
   MCContext &Ctx;
@@ -111,5 +111,5 @@ private:
 
 } // end namespace of llvm.
 
-#endif // LLVM_AVR_CODE_EMITTER_H
+#endif // LLVM_MCS51_CODE_EMITTER_H
 

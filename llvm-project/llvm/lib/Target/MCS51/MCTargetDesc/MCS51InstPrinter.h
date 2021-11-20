@@ -1,4 +1,4 @@
-//===- AVRInstPrinter.h - Convert AVR MCInst to assembly syntax -*- C++ -*-===//
+//===- MCS51InstPrinter.h - Convert MCS51 MCInst to assembly syntax -*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,23 +6,23 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// This class prints an AVR MCInst to a .s file.
+// This class prints an MCS51 MCInst to a .s file.
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_AVR_INST_PRINTER_H
-#define LLVM_AVR_INST_PRINTER_H
+#ifndef LLVM_MCS51_INST_PRINTER_H
+#define LLVM_MCS51_INST_PRINTER_H
 
 #include "llvm/MC/MCInstPrinter.h"
 
-#include "MCTargetDesc/AVRMCTargetDesc.h"
+#include "MCTargetDesc/MCS51MCTargetDesc.h"
 
 namespace llvm {
 
-/// Prints AVR instructions to a textual stream.
-class AVRInstPrinter : public MCInstPrinter {
+/// Prints MCS51 instructions to a textual stream.
+class MCS51InstPrinter : public MCInstPrinter {
 public:
-  AVRInstPrinter(const MCAsmInfo &MAI, const MCInstrInfo &MII,
+  MCS51InstPrinter(const MCAsmInfo &MAI, const MCInstrInfo &MII,
                  const MCRegisterInfo &MRI)
       : MCInstPrinter(MAI, MII, MRI) {}
 
@@ -34,7 +34,7 @@ public:
 
 private:
   static const char *getRegisterName(unsigned RegNo,
-                                     unsigned AltIdx = AVR::NoRegAltName);
+                                     unsigned AltIdx = MCS51::NoRegAltName);
 
   void printOperand(const MCInst *MI, unsigned OpNo, raw_ostream &O);
   void printPCRelImm(const MCInst *MI, unsigned OpNo, raw_ostream &O);
@@ -55,5 +55,5 @@ private:
 
 } // end namespace llvm
 
-#endif // LLVM_AVR_INST_PRINTER_H
+#endif // LLVM_MCS51_INST_PRINTER_H
 

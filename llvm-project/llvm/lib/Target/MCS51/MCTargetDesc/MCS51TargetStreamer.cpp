@@ -1,4 +1,4 @@
-//===-- AVRTargetStreamer.cpp - AVR Target Streamer Methods ---------------===//
+//===-- MCS51TargetStreamer.cpp - MCS51 Target Streamer Methods ---------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,22 +6,22 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// This file provides AVR specific target streamer methods.
+// This file provides MCS51 specific target streamer methods.
 //
 //===----------------------------------------------------------------------===//
 
-#include "AVRTargetStreamer.h"
+#include "MCS51TargetStreamer.h"
 
 #include "llvm/MC/MCContext.h"
 
 namespace llvm {
 
-AVRTargetStreamer::AVRTargetStreamer(MCStreamer &S) : MCTargetStreamer(S) {}
+MCS51TargetStreamer::MCS51TargetStreamer(MCStreamer &S) : MCTargetStreamer(S) {}
 
-AVRTargetAsmStreamer::AVRTargetAsmStreamer(MCStreamer &S)
-    : AVRTargetStreamer(S) {}
+MCS51TargetAsmStreamer::MCS51TargetAsmStreamer(MCStreamer &S)
+    : MCS51TargetStreamer(S) {}
 
-void AVRTargetStreamer::finish() {
+void MCS51TargetStreamer::finish() {
   MCStreamer &OS = getStreamer();
   MCContext &Context = OS.getContext();
 

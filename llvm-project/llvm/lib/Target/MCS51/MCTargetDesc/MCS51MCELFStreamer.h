@@ -1,4 +1,4 @@
-//===--------- AVRMCELFStreamer.h - AVR subclass of MCELFStreamer ---------===//
+//===--------- MCS51MCELFStreamer.h - MCS51 subclass of MCELFStreamer ---------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,11 +6,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_LIB_TARGET_AVR_MCTARGETDESC_AVRMCELFSTREAMER_H
-#define LLVM_LIB_TARGET_AVR_MCTARGETDESC_AVRMCELFSTREAMER_H
+#ifndef LLVM_LIB_TARGET_MCS51_MCTARGETDESC_MCS51MCELFSTREAMER_H
+#define LLVM_LIB_TARGET_MCS51_MCTARGETDESC_MCS51MCELFSTREAMER_H
 
-#include "MCTargetDesc/AVRMCExpr.h"
-#include "MCTargetDesc/AVRMCTargetDesc.h"
+#include "MCTargetDesc/MCS51MCExpr.h"
+#include "MCTargetDesc/MCS51MCTargetDesc.h"
 #include "llvm/MC/MCAsmBackend.h"
 #include "llvm/MC/MCCodeEmitter.h"
 #include "llvm/MC/MCELFStreamer.h"
@@ -22,35 +22,35 @@ namespace llvm {
 const int SIZE_LONG = 4;
 const int SIZE_WORD = 2;
 
-class AVRMCELFStreamer : public MCELFStreamer {
+class MCS51MCELFStreamer : public MCELFStreamer {
   std::unique_ptr<MCInstrInfo> MCII;
 
 public:
-  AVRMCELFStreamer(MCContext &Context, std::unique_ptr<MCAsmBackend> TAB,
+  MCS51MCELFStreamer(MCContext &Context, std::unique_ptr<MCAsmBackend> TAB,
                    std::unique_ptr<MCObjectWriter> OW,
                    std::unique_ptr<MCCodeEmitter> Emitter)
       : MCELFStreamer(Context, std::move(TAB), std::move(OW),
                       std::move(Emitter)),
-        MCII(createAVRMCInstrInfo()) {}
+        MCII(createMCS51MCInstrInfo()) {}
 
-  AVRMCELFStreamer(MCContext &Context, std::unique_ptr<MCAsmBackend> TAB,
+  MCS51MCELFStreamer(MCContext &Context, std::unique_ptr<MCAsmBackend> TAB,
                    std::unique_ptr<MCObjectWriter> OW,
                    std::unique_ptr<MCCodeEmitter> Emitter,
                    MCAssembler *Assembler)
       : MCELFStreamer(Context, std::move(TAB), std::move(OW),
                       std::move(Emitter)),
-        MCII(createAVRMCInstrInfo()) {}
+        MCII(createMCS51MCInstrInfo()) {}
 
   void emitValueForModiferKind(
       const MCSymbol *Sym, unsigned SizeInBytes, SMLoc Loc = SMLoc(),
-      AVRMCExpr::VariantKind ModifierKind = AVRMCExpr::VK_AVR_None);
+      MCS51MCExpr::VariantKind ModifierKind = MCS51MCExpr::VK_MCS51_None);
 };
 
-MCStreamer *createAVRELFStreamer(Triple const &TT, MCContext &Context,
+MCStreamer *createMCS51ELFStreamer(Triple const &TT, MCContext &Context,
                                  std::unique_ptr<MCAsmBackend> MAB,
                                  std::unique_ptr<MCObjectWriter> OW,
                                  std::unique_ptr<MCCodeEmitter> CE);
 
 } // end namespace llvm
 
-#endif // LLVM_LIB_TARGET_AVR_MCTARGETDESC_AVRMCELFSTREAMER_H
+#endif // LLVM_LIB_TARGET_MCS51_MCTARGETDESC_MCS51MCELFSTREAMER_H

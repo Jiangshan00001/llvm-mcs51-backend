@@ -1,4 +1,4 @@
-//===-- AVRTargetInfo.cpp - AVR Target Implementation ---------------------===//
+//===-- MCS51TargetInfo.cpp - MCS51 Target Implementation ---------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,17 +6,17 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "TargetInfo/AVRTargetInfo.h"
+#include "TargetInfo/MCS51TargetInfo.h"
 #include "llvm/Support/TargetRegistry.h"
 namespace llvm {
-Target &getTheAVRTarget() {
-  static Target TheAVRTarget;
-  return TheAVRTarget;
+Target &getTheMCS51Target() {
+  static Target TheMCS51Target;
+  return TheMCS51Target;
 }
 }
 
-extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeAVRTargetInfo() {
-  llvm::RegisterTarget<llvm::Triple::avr> X(llvm::getTheAVRTarget(), "avr",
-                                            "Atmel AVR Microcontroller", "AVR");
+extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeMCS51TargetInfo() {
+  llvm::RegisterTarget<llvm::Triple::MCS51> X(llvm::getTheMCS51Target(), "MCS51",
+                                            "Atmel MCS51 Microcontroller", "MCS51");
 }
 

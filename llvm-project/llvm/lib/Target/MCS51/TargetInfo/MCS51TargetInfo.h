@@ -1,4 +1,4 @@
-//===-- AVRTargetInfo.h - AVR Target Implementation -------------*- C++ -*-===//
+//===-- MCS51TargetInfo.h - MCS51 Target Implementation -------------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,13 +6,13 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_AVR_TARGET_INFO_H
-#define LLVM_AVR_TARGET_INFO_H
+#ifndef LLVM_MCS51_TARGET_INFO_H
+#define LLVM_MCS51_TARGET_INFO_H
 
 namespace llvm {
 class Target;
 
-Target &getTheAVRTarget();
+Target &getTheMCS51Target();
 } // namespace llvm
 
-#endif // LLVM_AVR_TARGET_INFO_H
+#endif // LLVM_MCS51_TARGET_INFO_H

@@ -1,4 +1,4 @@
-//===-- AVRELFObjectWriter.cpp - AVR ELF Writer ---------------------------===//
+//===-- MCS51ELFObjectWriter.cpp - MCS51 ELF Writer ---------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,9 +6,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "MCTargetDesc/AVRFixupKinds.h"
-#include "MCTargetDesc/AVRMCExpr.h"
-#include "MCTargetDesc/AVRMCTargetDesc.h"
+#include "MCTargetDesc/MCS51FixupKinds.h"
+#include "MCTargetDesc/MCS51MCExpr.h"
+#include "MCTargetDesc/MCS51MCTargetDesc.h"
 
 #include "llvm/MC/MCAssembler.h"
 #include "llvm/MC/MCELFObjectWriter.h"
@@ -20,12 +20,12 @@
 
 namespace llvm {
 
-/// Writes AVR machine code into an ELF32 object file.
-class AVRELFObjectWriter : public MCELFObjectTargetWriter {
+/// Writes MCS51 machine code into an ELF32 object file.
+class MCS51ELFObjectWriter : public MCELFObjectTargetWriter {
 public:
-  AVRELFObjectWriter(uint8_t OSABI);
+  MCS51ELFObjectWriter(uint8_t OSABI);
 
-  virtual ~AVRELFObjectWriter() {}
+  virtual ~MCS51ELFObjectWriter() {}
 
   unsigned getRelocType(MCContext &Ctx,
                         const MCValue &Target,
@@ -33,10 +33,10 @@ public:
                         bool IsPCRel) const override;
 };
 
-AVRELFObjectWriter::AVRELFObjectWriter(uint8_t OSABI)
-    : MCELFObjectTargetWriter(false, OSABI, ELF::EM_AVR, true) {}
+MCS51ELFObjectWriter::MCS51ELFObjectWriter(uint8_t OSABI)
+    : MCELFObjectTargetWriter(false, OSABI, ELF::EM_MCS51, true) {}
 
-unsigned AVRELFObjectWriter::getRelocType(MCContext &Ctx,
+unsigned MCS51ELFObjectWriter::getRelocType(MCContext &Ctx,
                                           const MCValue &Target,
                                           const MCFixup &Fixup,
                                           bool IsPCRel) const {
@@ -47,114 +47,114 @@ unsigned AVRELFObjectWriter::getRelocType(MCContext &Ctx,
     default:
       llvm_unreachable("Unsupported Modifier");
     case MCSymbolRefExpr::VK_None:
-      return ELF::R_AVR_8;
-    case MCSymbolRefExpr::VK_AVR_DIFF8:
-      return ELF::R_AVR_DIFF8;
-    case MCSymbolRefExpr::VK_AVR_LO8:
-      return ELF::R_AVR_8_LO8;
-    case MCSymbolRefExpr::VK_AVR_HI8:
-      return ELF::R_AVR_8_HI8;
-    case MCSymbolRefExpr::VK_AVR_HLO8:
-      return ELF::R_AVR_8_HLO8;
+      return ELF::R_MCS51_8;
+    case MCSymbolRefExpr::VK_MCS51_DIFF8:
+      return ELF::R_MCS51_DIFF8;
+    case MCSymbolRefExpr::VK_MCS51_LO8:
+      return ELF::R_MCS51_8_LO8;
+    case MCSymbolRefExpr::VK_MCS51_HI8:
+      return ELF::R_MCS51_8_HI8;
+    case MCSymbolRefExpr::VK_MCS51_HLO8:
+      return ELF::R_MCS51_8_HLO8;
     }
   case FK_Data_4:
     switch (Modifier) {
     default:
       llvm_unreachable("Unsupported Modifier");
     case MCSymbolRefExpr::VK_None:
-      return ELF::R_AVR_32;
-    case MCSymbolRefExpr::VK_AVR_DIFF32:
-      return ELF::R_AVR_DIFF32;
+      return ELF::R_MCS51_32;
+    case MCSymbolRefExpr::VK_MCS51_DIFF32:
+      return ELF::R_MCS51_DIFF32;
     }
   case FK_Data_2:
     switch (Modifier) {
     default:
       llvm_unreachable("Unsupported Modifier");
     case MCSymbolRefExpr::VK_None:
-      return ELF::R_AVR_16;
-    case MCSymbolRefExpr::VK_AVR_NONE:
-    case MCSymbolRefExpr::VK_AVR_PM:
-      return ELF::R_AVR_16_PM;
-    case MCSymbolRefExpr::VK_AVR_DIFF16:
-      return ELF::R_AVR_DIFF16;
+      return ELF::R_MCS51_16;
+    case MCSymbolRefExpr::VK_MCS51_NONE:
+    case MCSymbolRefExpr::VK_MCS51_PM:
+      return ELF::R_MCS51_16_PM;
+    case MCSymbolRefExpr::VK_MCS51_DIFF16:
+      return ELF::R_MCS51_DIFF16;
     }
-  case AVR::fixup_32:
-    return ELF::R_AVR_32;
-  case AVR::fixup_7_pcrel:
-    return ELF::R_AVR_7_PCREL;
-  case AVR::fixup_13_pcrel:
-    return ELF::R_AVR_13_PCREL;
-  case AVR::fixup_16:
-    return ELF::R_AVR_16;
-  case AVR::fixup_16_pm:
-    return ELF::R_AVR_16_PM;
-  case AVR::fixup_lo8_ldi:
-    return ELF::R_AVR_LO8_LDI;
-  case AVR::fixup_hi8_ldi:
-    return ELF::R_AVR_HI8_LDI;
-  case AVR::fixup_hh8_ldi:
-    return ELF::R_AVR_HH8_LDI;
-  case AVR::fixup_lo8_ldi_neg:
-    return ELF::R_AVR_LO8_LDI_NEG;
-  case AVR::fixup_hi8_ldi_neg:
-    return ELF::R_AVR_HI8_LDI_NEG;
-  case AVR::fixup_hh8_ldi_neg:
-    return ELF::R_AVR_HH8_LDI_NEG;
-  case AVR::fixup_lo8_ldi_pm:
-    return ELF::R_AVR_LO8_LDI_PM;
-  case AVR::fixup_hi8_ldi_pm:
-    return ELF::R_AVR_HI8_LDI_PM;
-  case AVR::fixup_hh8_ldi_pm:
-    return ELF::R_AVR_HH8_LDI_PM;
-  case AVR::fixup_lo8_ldi_pm_neg:
-    return ELF::R_AVR_LO8_LDI_PM_NEG;
-  case AVR::fixup_hi8_ldi_pm_neg:
-    return ELF::R_AVR_HI8_LDI_PM_NEG;
-  case AVR::fixup_hh8_ldi_pm_neg:
-    return ELF::R_AVR_HH8_LDI_PM_NEG;
-  case AVR::fixup_call:
-    return ELF::R_AVR_CALL;
-  case AVR::fixup_ldi:
-    return ELF::R_AVR_LDI;
-  case AVR::fixup_6:
-    return ELF::R_AVR_6;
-  case AVR::fixup_6_adiw:
-    return ELF::R_AVR_6_ADIW;
-  case AVR::fixup_ms8_ldi:
-    return ELF::R_AVR_MS8_LDI;
-  case AVR::fixup_ms8_ldi_neg:
-    return ELF::R_AVR_MS8_LDI_NEG;
-  case AVR::fixup_lo8_ldi_gs:
-    return ELF::R_AVR_LO8_LDI_GS;
-  case AVR::fixup_hi8_ldi_gs:
-    return ELF::R_AVR_HI8_LDI_GS;
-  case AVR::fixup_8:
-    return ELF::R_AVR_8;
-  case AVR::fixup_8_lo8:
-    return ELF::R_AVR_8_LO8;
-  case AVR::fixup_8_hi8:
-    return ELF::R_AVR_8_HI8;
-  case AVR::fixup_8_hlo8:
-    return ELF::R_AVR_8_HLO8;
-  case AVR::fixup_diff8:
-    return ELF::R_AVR_DIFF8;
-  case AVR::fixup_diff16:
-    return ELF::R_AVR_DIFF16;
-  case AVR::fixup_diff32:
-    return ELF::R_AVR_DIFF32;
-  case AVR::fixup_lds_sts_16:
-    return ELF::R_AVR_LDS_STS_16;
-  case AVR::fixup_port6:
-    return ELF::R_AVR_PORT6;
-  case AVR::fixup_port5:
-    return ELF::R_AVR_PORT5;
+  case MCS51::fixup_32:
+    return ELF::R_MCS51_32;
+  case MCS51::fixup_7_pcrel:
+    return ELF::R_MCS51_7_PCREL;
+  case MCS51::fixup_13_pcrel:
+    return ELF::R_MCS51_13_PCREL;
+  case MCS51::fixup_16:
+    return ELF::R_MCS51_16;
+  case MCS51::fixup_16_pm:
+    return ELF::R_MCS51_16_PM;
+  case MCS51::fixup_lo8_ldi:
+    return ELF::R_MCS51_LO8_LDI;
+  case MCS51::fixup_hi8_ldi:
+    return ELF::R_MCS51_HI8_LDI;
+  case MCS51::fixup_hh8_ldi:
+    return ELF::R_MCS51_HH8_LDI;
+  case MCS51::fixup_lo8_ldi_neg:
+    return ELF::R_MCS51_LO8_LDI_NEG;
+  case MCS51::fixup_hi8_ldi_neg:
+    return ELF::R_MCS51_HI8_LDI_NEG;
+  case MCS51::fixup_hh8_ldi_neg:
+    return ELF::R_MCS51_HH8_LDI_NEG;
+  case MCS51::fixup_lo8_ldi_pm:
+    return ELF::R_MCS51_LO8_LDI_PM;
+  case MCS51::fixup_hi8_ldi_pm:
+    return ELF::R_MCS51_HI8_LDI_PM;
+  case MCS51::fixup_hh8_ldi_pm:
+    return ELF::R_MCS51_HH8_LDI_PM;
+  case MCS51::fixup_lo8_ldi_pm_neg:
+    return ELF::R_MCS51_LO8_LDI_PM_NEG;
+  case MCS51::fixup_hi8_ldi_pm_neg:
+    return ELF::R_MCS51_HI8_LDI_PM_NEG;
+  case MCS51::fixup_hh8_ldi_pm_neg:
+    return ELF::R_MCS51_HH8_LDI_PM_NEG;
+  case MCS51::fixup_call:
+    return ELF::R_MCS51_CALL;
+  case MCS51::fixup_ldi:
+    return ELF::R_MCS51_LDI;
+  case MCS51::fixup_6:
+    return ELF::R_MCS51_6;
+  case MCS51::fixup_6_adiw:
+    return ELF::R_MCS51_6_ADIW;
+  case MCS51::fixup_ms8_ldi:
+    return ELF::R_MCS51_MS8_LDI;
+  case MCS51::fixup_ms8_ldi_neg:
+    return ELF::R_MCS51_MS8_LDI_NEG;
+  case MCS51::fixup_lo8_ldi_gs:
+    return ELF::R_MCS51_LO8_LDI_GS;
+  case MCS51::fixup_hi8_ldi_gs:
+    return ELF::R_MCS51_HI8_LDI_GS;
+  case MCS51::fixup_8:
+    return ELF::R_MCS51_8;
+  case MCS51::fixup_8_lo8:
+    return ELF::R_MCS51_8_LO8;
+  case MCS51::fixup_8_hi8:
+    return ELF::R_MCS51_8_HI8;
+  case MCS51::fixup_8_hlo8:
+    return ELF::R_MCS51_8_HLO8;
+  case MCS51::fixup_diff8:
+    return ELF::R_MCS51_DIFF8;
+  case MCS51::fixup_diff16:
+    return ELF::R_MCS51_DIFF16;
+  case MCS51::fixup_diff32:
+    return ELF::R_MCS51_DIFF32;
+  case MCS51::fixup_lds_sts_16:
+    return ELF::R_MCS51_LDS_STS_16;
+  case MCS51::fixup_port6:
+    return ELF::R_MCS51_PORT6;
+  case MCS51::fixup_port5:
+    return ELF::R_MCS51_PORT5;
   default:
     llvm_unreachable("invalid fixup kind!");
   }
 }
 
-std::unique_ptr<MCObjectTargetWriter> createAVRELFObjectWriter(uint8_t OSABI) {
-  return std::make_unique<AVRELFObjectWriter>(OSABI);
+std::unique_ptr<MCObjectTargetWriter> createMCS51ELFObjectWriter(uint8_t OSABI) {
+  return std::make_unique<MCS51ELFObjectWriter>(OSABI);
 }
 
 } // end of namespace llvm

@@ -1,4 +1,4 @@
-//===-- AVRMCAsmInfo.cpp - AVR asm properties -----------------------------===//
+//===-- MCS51MCAsmInfo.cpp - MCS51 asm properties -----------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,17 +6,17 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// This file contains the declarations of the AVRMCAsmInfo properties.
+// This file contains the declarations of the MCS51MCAsmInfo properties.
 //
 //===----------------------------------------------------------------------===//
 
-#include "AVRMCAsmInfo.h"
+#include "MCS51MCAsmInfo.h"
 
 #include "llvm/ADT/Triple.h"
 
 namespace llvm {
 
-AVRMCAsmInfo::AVRMCAsmInfo(const Triple &TT, const MCTargetOptions &Options) {
+MCS51MCAsmInfo::MCS51MCAsmInfo(const Triple &TT, const MCTargetOptions &Options) {
   CodePointerSize = 2;
   CalleeSaveStackSlotSize = 2;
   CommentString = ";";

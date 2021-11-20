@@ -1,4 +1,4 @@
-//===-- AVRMCExpr.h - AVR specific MC expression classes --------*- C++ -*-===//
+//===-- MCS51MCExpr.h - MCS51 specific MC expression classes --------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,40 +6,40 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_AVR_MCEXPR_H
-#define LLVM_AVR_MCEXPR_H
+#ifndef LLVM_MCS51_MCEXPR_H
+#define LLVM_MCS51_MCEXPR_H
 
 #include "llvm/MC/MCExpr.h"
 
-#include "MCTargetDesc/AVRFixupKinds.h"
+#include "MCTargetDesc/MCS51FixupKinds.h"
 
 namespace llvm {
 
-/// A expression in AVR machine code.
-class AVRMCExpr : public MCTargetExpr {
+/// A expression in MCS51 machine code.
+class MCS51MCExpr : public MCTargetExpr {
 public:
   /// Specifies the type of an expression.
   enum VariantKind {
-    VK_AVR_None = 0,
+    VK_MCS51_None = 0,
 
-    VK_AVR_HI8,  ///< Corresponds to `hi8()`.
-    VK_AVR_LO8,  ///< Corresponds to `lo8()`.
-    VK_AVR_HH8,  ///< Corresponds to `hlo8() and hh8()`.
-    VK_AVR_HHI8, ///< Corresponds to `hhi8()`.
+    VK_MCS51_HI8,  ///< Corresponds to `hi8()`.
+    VK_MCS51_LO8,  ///< Corresponds to `lo8()`.
+    VK_MCS51_HH8,  ///< Corresponds to `hlo8() and hh8()`.
+    VK_MCS51_HHI8, ///< Corresponds to `hhi8()`.
 
-    VK_AVR_PM,     ///< Corresponds to `pm()`, reference to program memory.
-    VK_AVR_PM_LO8, ///< Corresponds to `pm_lo8()`.
-    VK_AVR_PM_HI8, ///< Corresponds to `pm_hi8()`.
-    VK_AVR_PM_HH8, ///< Corresponds to `pm_hh8()`.
+    VK_MCS51_PM,     ///< Corresponds to `pm()`, reference to program memory.
+    VK_MCS51_PM_LO8, ///< Corresponds to `pm_lo8()`.
+    VK_MCS51_PM_HI8, ///< Corresponds to `pm_hi8()`.
+    VK_MCS51_PM_HH8, ///< Corresponds to `pm_hh8()`.
 
-    VK_AVR_LO8_GS, ///< Corresponds to `lo8(gs())`.
-    VK_AVR_HI8_GS, ///< Corresponds to `hi8(gs())`.
-    VK_AVR_GS, ///< Corresponds to `gs()`.
+    VK_MCS51_LO8_GS, ///< Corresponds to `lo8(gs())`.
+    VK_MCS51_HI8_GS, ///< Corresponds to `hi8(gs())`.
+    VK_MCS51_GS, ///< Corresponds to `gs()`.
   };
 
 public:
-  /// Creates an AVR machine code expression.
-  static const AVRMCExpr *create(VariantKind Kind, const MCExpr *Expr,
+  /// Creates an MCS51 machine code expression.
+  static const MCS51MCExpr *create(VariantKind Kind, const MCExpr *Expr,
                                  bool isNegated, MCContext &Ctx);
 
   /// Gets the type of the expression.
@@ -48,7 +48,7 @@ public:
   const char *getName() const;
   const MCExpr *getSubExpr() const { return SubExpr; }
   /// Gets the fixup which corresponds to the expression.
-  AVR::Fixups getFixupKind() const;
+  MCS51::Fixups getFixupKind() const;
   /// Evaluates the fixup as a constant value.
   bool evaluateAsConstant(int64_t &Result) const;
 
@@ -82,11 +82,11 @@ private:
   bool Negated;
 
 private:
-  explicit AVRMCExpr(VariantKind Kind, const MCExpr *Expr, bool Negated)
+  explicit MCS51MCExpr(VariantKind Kind, const MCExpr *Expr, bool Negated)
       : Kind(Kind), SubExpr(Expr), Negated(Negated) {}
-  ~AVRMCExpr() {}
+  ~MCS51MCExpr() {}
 };
 
 } // end namespace llvm
 
-#endif // LLVM_AVR_MCEXPR_H
+#endif // LLVM_MCS51_MCEXPR_H

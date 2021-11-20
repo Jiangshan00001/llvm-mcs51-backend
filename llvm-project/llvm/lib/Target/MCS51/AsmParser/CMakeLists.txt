@@ -4,8 +4,8 @@ add_llvm_component_library(LLVMMCS51AsmParser
   LINK_COMPONENTS
   MC
   MCParser
-  AVRDesc
-  AVRInfo
+  MCS51Desc
+  MCS51Info
   Support
 
   ADD_TO_COMPONENT

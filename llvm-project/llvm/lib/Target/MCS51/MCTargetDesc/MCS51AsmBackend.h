@@ -1,4 +1,4 @@
-//===-- AVRAsmBackend.h - AVR Asm Backend  --------------------------------===//
+//===-- MCS51AsmBackend.h - MCS51 Asm Backend  --------------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,15 +6,15 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// \file The AVR assembly backend implementation.
+// \file The MCS51 assembly backend implementation.
 //
 //===----------------------------------------------------------------------===//
 //
 
-#ifndef LLVM_AVR_ASM_BACKEND_H
-#define LLVM_AVR_ASM_BACKEND_H
+#ifndef LLVM_MCS51_ASM_BACKEND_H
+#define LLVM_MCS51_ASM_BACKEND_H
 
-#include "MCTargetDesc/AVRFixupKinds.h"
+#include "MCTargetDesc/MCS51FixupKinds.h"
 
 #include "llvm/ADT/Triple.h"
 #include "llvm/MC/MCAsmBackend.h"
@@ -25,10 +25,10 @@ class MCAssembler;
 class MCContext;
 struct MCFixupKindInfo;
 
-/// Utilities for manipulating generated AVR machine code.
-class AVRAsmBackend : public MCAsmBackend {
+/// Utilities for manipulating generated MCS51 machine code.
+class MCS51AsmBackend : public MCAsmBackend {
 public:
-  AVRAsmBackend(Triple::OSType OSType)
+  MCS51AsmBackend(Triple::OSType OSType)
       : MCAsmBackend(support::little), OSType(OSType) {}
 
   void adjustFixupValue(const MCFixup &Fixup, const MCValue &Target,
@@ -45,7 +45,7 @@ public:
   const MCFixupKindInfo &getFixupKindInfo(MCFixupKind Kind) const override;
 
   unsigned getNumFixupKinds() const override {
-    return AVR::NumTargetFixupKinds;
+    return MCS51::NumTargetFixupKinds;
   }
 
   bool fixupNeedsRelaxation(const MCFixup &Fixup, uint64_t Value,
@@ -66,5 +66,5 @@ private:
 
 } // end namespace llvm
 
-#endif // LLVM_AVR_ASM_BACKEND_H
+#endif // LLVM_MCS51_ASM_BACKEND_H
 

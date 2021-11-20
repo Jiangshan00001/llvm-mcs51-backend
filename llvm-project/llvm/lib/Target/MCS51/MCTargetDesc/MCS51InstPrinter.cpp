@@ -1,4 +1,4 @@
-//===-- AVRInstPrinter.cpp - Convert AVR MCInst to assembly syntax --------===//
+//===-- MCS51InstPrinter.cpp - Convert MCS51 MCInst to assembly syntax --------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,13 +6,13 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// This class prints an AVR MCInst to a .s file.
+// This class prints an MCS51 MCInst to a .s file.
 //
 //===----------------------------------------------------------------------===//
 
-#include "AVRInstPrinter.h"
+#include "MCS51InstPrinter.h"
 
-#include "MCTargetDesc/AVRMCTargetDesc.h"
+#include "MCTargetDesc/MCS51MCTargetDesc.h"
 
 #include "llvm/MC/MCExpr.h"
 #include "llvm/MC/MCInst.h"
@@ -30,9 +30,9 @@ namespace llvm {
 
 // Include the auto-generated portion of the assembly writer.
 #define PRINT_ALIAS_INSTR
-#include "AVRGenAsmWriter.inc"
+#include "MCS51GenAsmWriter.inc"
 
-void AVRInstPrinter::printInst(const MCInst *MI, uint64_t Address,
+void MCS51InstPrinter::printInst(const MCInst *MI, uint64_t Address,
                                StringRef Annot, const MCSubtargetInfo &STI,
                                raw_ostream &O) {
   unsigned Opcode = MI->getOpcode();
@@ -41,37 +41,37 @@ void AVRInstPrinter::printInst(const MCInst *MI, uint64_t Address,
   // of the form "ld reg, X+".
   // TODO: We should be able to rewrite this using TableGen data.
   switch (Opcode) {
-  case AVR::LDRdPtr:
-  case AVR::LDRdPtrPi:
-  case AVR::LDRdPtrPd:
+  case MCS51::LDRdPtr:
+  case MCS51::LDRdPtrPi:
+  case MCS51::LDRdPtrPd:
     O << "\tld\t";
     printOperand(MI, 0, O);
     O << ", ";
 
-    if (Opcode == AVR::LDRdPtrPd)
+    if (Opcode == MCS51::LDRdPtrPd)
       O << '-';
 
     printOperand(MI, 1, O);
 
-    if (Opcode == AVR::LDRdPtrPi)
+    if (Opcode == MCS51::LDRdPtrPi)
       O << '+';
     break;
-  case AVR::STPtrRr:
+  case MCS51::STPtrRr:
     O << "\tst\t";
     printOperand(MI, 0, O);
     O << ", ";
     printOperand(MI, 1, O);
     break;
-  case AVR::STPtrPiRr:
-  case AVR::STPtrPdRr:
+  case MCS51::STPtrPiRr:
+  case MCS51::STPtrPdRr:
     O << "\tst\t";
 
-    if (Opcode == AVR::STPtrPdRr)
+    if (Opcode == MCS51::STPtrPdRr)
       O << '-';
 
     printOperand(MI, 1, O);
 
-    if (Opcode == AVR::STPtrPiRr)
+    if (Opcode == MCS51::STPtrPiRr)
       O << '+';
 
     O << ", ";
@@ -86,22 +86,22 @@ void AVRInstPrinter::printInst(const MCInst *MI, uint64_t Address,
   }
 }
 
-const char *AVRInstPrinter::getPrettyRegisterName(unsigned RegNum,
+const char *MCS51InstPrinter::getPrettyRegisterName(unsigned RegNum,
                                                   MCRegisterInfo const &MRI) {
   // GCC prints register pairs by just printing the lower register
   // If the register contains a subregister, print it instead
   if (MRI.getNumSubRegIndices() > 0) {
-    unsigned RegLoNum = MRI.getSubReg(RegNum, AVR::sub_lo);
-    RegNum = (RegLoNum != AVR::NoRegister) ? RegLoNum : RegNum;
+    unsigned RegLoNum = MRI.getSubReg(RegNum, MCS51::sub_lo);
+    RegNum = (RegLoNum != MCS51::NoRegister) ? RegLoNum : RegNum;
   }
 
   return getRegisterName(RegNum);
 }
 
-void AVRInstPrinter::printOperand(const MCInst *MI, unsigned OpNo,
+void MCS51InstPrinter::printOperand(const MCInst *MI, unsigned OpNo,
                                   raw_ostream &O) {
   const MCOperandInfo &MOI = this->MII.get(MI->getOpcode()).OpInfo[OpNo];
-  if (MOI.RegClass == AVR::ZREGRegClassID) {
+  if (MOI.RegClass == MCS51::ZREGRegClassID) {
     // Special case for the Z register, which sometimes doesn't have an operand
     // in the MCInst.
     O << "Z";
@@ -121,12 +121,12 @@ void AVRInstPrinter::printOperand(const MCInst *MI, unsigned OpNo,
   const MCOperand &Op = MI->getOperand(OpNo);
 
   if (Op.isReg()) {
-    bool isPtrReg = (MOI.RegClass == AVR::PTRREGSRegClassID) ||
-                    (MOI.RegClass == AVR::PTRDISPREGSRegClassID) ||
-                    (MOI.RegClass == AVR::ZREGRegClassID);
+    bool isPtrReg = (MOI.RegClass == MCS51::PTRREGSRegClassID) ||
+                    (MOI.RegClass == MCS51::PTRDISPREGSRegClassID) ||
+                    (MOI.RegClass == MCS51::ZREGRegClassID);
 
     if (isPtrReg) {
-      O << getRegisterName(Op.getReg(), AVR::ptr);
+      O << getRegisterName(Op.getReg(), MCS51::ptr);
     } else {
       O << getPrettyRegisterName(Op.getReg(), MRI);
     }
@@ -140,7 +140,7 @@ void AVRInstPrinter::printOperand(const MCInst *MI, unsigned OpNo,
 
 /// This is used to print an immediate value that ends up
 /// being encoded as a pc-relative value.
-void AVRInstPrinter::printPCRelImm(const MCInst *MI, unsigned OpNo,
+void MCS51InstPrinter::printPCRelImm(const MCInst *MI, unsigned OpNo,
                                    raw_ostream &O) {
   if (OpNo >= MI->size()) {
     // Not all operands are correctly disassembled at the moment. This means
@@ -170,7 +170,7 @@ void AVRInstPrinter::printPCRelImm(const MCInst *MI, unsigned OpNo,
   }
 }
 
-void AVRInstPrinter::printMemri(const MCInst *MI, unsigned OpNo,
+void MCS51InstPrinter::printMemri(const MCInst *MI, unsigned OpNo,
                                 raw_ostream &O) {
   assert(MI->getOperand(OpNo).isReg() && "Expected a register for the first operand");
 

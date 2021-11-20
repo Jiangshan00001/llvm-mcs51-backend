@@ -1,4 +1,4 @@
-//===-- AVRFixupKinds.h - AVR Specific Fixup Entries ------------*- C++ -*-===//
+//===-- MCS51FixupKinds.h - MCS51 Specific Fixup Entries ------------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,13 +6,13 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_AVR_FIXUP_KINDS_H
-#define LLVM_AVR_FIXUP_KINDS_H
+#ifndef LLVM_MCS51_FIXUP_KINDS_H
+#define LLVM_MCS51_FIXUP_KINDS_H
 
 #include "llvm/MC/MCFixup.h"
 
 namespace llvm {
-namespace AVR {
+namespace MCS51 {
 
 /// The set of supported fixups.
 ///
@@ -21,10 +21,10 @@ namespace AVR {
 /// to be uniquely named.
 ///
 /// \note This table *must* be in the same order of
-///       MCFixupKindInfo Infos[AVR::NumTargetFixupKinds]
-///       in `AVRAsmBackend.cpp`.
+///       MCFixupKindInfo Infos[MCS51::NumTargetFixupKinds]
+///       in `MCS51AsmBackend.cpp`.
 enum Fixups {
-  /// A 32-bit AVR fixup.
+  /// A 32-bit MCS51 fixup.
   fixup_32 = FirstTargetFixupKind,
 
   /// A 7-bit PC-relative fixup for the family of conditional
@@ -34,7 +34,7 @@ enum Fixups {
   /// which take 12-bit targets (RJMP,RCALL,etc).
   /// \note Although the fixup is labelled as 13 bits, it
   ///       is actually only encoded in 12. The reason for
-  ///       The nonmenclature is that AVR branch targets are
+  ///       The nonmenclature is that MCS51 branch targets are
   ///       rightshifted by 1, because instructions are always
   ///       aligned to 2 bytes, so the 0'th bit is always 0.
   ///       This way there is 13-bits of precision.
@@ -133,7 +133,7 @@ enum Fixups {
 namespace fixups {
 
 /// Adjusts the value of a branch target.
-/// All branch targets in AVR are rightshifted by 1 to take advantage
+/// All branch targets in MCS51 are rightshifted by 1 to take advantage
 /// of the fact that all instructions are aligned to addresses of size
 /// 2, so bit 0 of an address is always 0. This gives us another bit
 /// of precision.
@@ -142,6 +142,6 @@ template <typename T> inline void adjustBranchTarget(T &val) { val >>= 1; }
 
 } // end of namespace fixups
 }
-} // end of namespace llvm::AVR
+} // end of namespace llvm::MCS51
 
-#endif // LLVM_AVR_FIXUP_KINDS_H
+#endif // LLVM_MCS51_FIXUP_KINDS_H

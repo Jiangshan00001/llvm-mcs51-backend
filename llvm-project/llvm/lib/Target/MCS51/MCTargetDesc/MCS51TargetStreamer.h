@@ -1,4 +1,4 @@
-//===-- AVRTargetStreamer.h - AVR Target Streamer --------------*- C++ -*--===//
+//===-- MCS51TargetStreamer.h - MCS51 Target Streamer --------------*- C++ -*--===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -6,28 +6,28 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_AVR_TARGET_STREAMER_H
-#define LLVM_AVR_TARGET_STREAMER_H
+#ifndef LLVM_MCS51_TARGET_STREAMER_H
+#define LLVM_MCS51_TARGET_STREAMER_H
 
 #include "llvm/MC/MCELFStreamer.h"
 
 namespace llvm {
 class MCStreamer;
 
-/// A generic AVR target output stream.
-class AVRTargetStreamer : public MCTargetStreamer {
+/// A generic MCS51 target output stream.
+class MCS51TargetStreamer : public MCTargetStreamer {
 public:
-  explicit AVRTargetStreamer(MCStreamer &S);
+  explicit MCS51TargetStreamer(MCStreamer &S);
 
   void finish() override;
 };
 
-/// A target streamer for textual AVR assembly code.
-class AVRTargetAsmStreamer : public AVRTargetStreamer {
+/// A target streamer for textual MCS51 assembly code.
+class MCS51TargetAsmStreamer : public MCS51TargetStreamer {
 public:
-  explicit AVRTargetAsmStreamer(MCStreamer &S);
+  explicit MCS51TargetAsmStreamer(MCStreamer &S);
 };
 
 } // end namespace llvm
 
-#endif // LLVM_AVR_TARGET_STREAMER_H
+#endif // LLVM_MCS51_TARGET_STREAMER_H
