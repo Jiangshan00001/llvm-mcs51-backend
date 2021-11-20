@@ -42,7 +42,7 @@ jobs:
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       run:  |
             ls
-            cd ./llvm1300
+            cd ./llvm1300/llvm
             cmake -B ./build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
