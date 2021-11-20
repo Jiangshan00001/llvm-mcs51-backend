@@ -26,6 +26,9 @@ jobs:
     - name: Configure vc
       shell: pwsh
       run: ls
+      run: wget https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-13.0.0.zip
+      run: unzip -x llvmorg-13.0.0.zip
+      run: ls
       run: ./.github/workflows/vcbuild.cmd -arch=x64 -host_arch=x64
 
     - name: Configure CMake
