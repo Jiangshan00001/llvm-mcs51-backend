@@ -28,7 +28,7 @@ jobs:
     - name: move mcs51 to llvm tree
       run: |
            ls
-           cp ./llvm-project/llvm/* ./llvm1300/llvm/
+           cp ./llvm-project/llvm/lib/Target/MCS51 ./llvm1300/llvm/lib/Target/
            cd ./llvm1300;
     
     - name: Configure vc
