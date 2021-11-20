@@ -23,7 +23,7 @@ jobs:
     steps:    
     - uses: actions/checkout@v2
     - name: get llvm
-      run: git clone --depth 1 https://github.com/llvm/llvm-project/tree/llvmorg-13.0.0 ./llvm1300
+      run: git clone --branch llvmorg-13.0.0 --depth 1 https://github.com/llvm/llvm-project.git ./llvm1300
       
     - name: move mcs51 to llvm tree
       run: |
