@@ -55,8 +55,9 @@ public:
         CalleeSavedFrameSize(0), VarArgsFrameIndex(0) {
     unsigned CallConv = MF.getFunction().getCallingConv();
 
-    this->IsInterruptHandler = CallConv == CallingConv::MCS51_INTR || MF.getFunction().hasFnAttribute("interrupt");
-    this->IsSignalHandler = CallConv == CallingConv::MCS51_SIGNAL || MF.getFunction().hasFnAttribute("signal");
+    //TODO ERROR no correct conv
+    this->IsInterruptHandler = CallConv == CallingConv::X86_INTR || MF.getFunction().hasFnAttribute("interrupt");
+    this->IsSignalHandler = CallConv == CallingConv::X86_INTR || MF.getFunction().hasFnAttribute("signal");
   }
 
   bool getHasSpills() const { return HasSpills; }

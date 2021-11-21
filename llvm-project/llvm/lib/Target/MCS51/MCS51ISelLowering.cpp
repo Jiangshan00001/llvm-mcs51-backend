@@ -217,11 +217,12 @@ MCS51TargetLowering::MCS51TargetLowering(const MCS51TargetMachine &TM,
   setLibcallName(RTLIB::UDIVREM_I16, "__udivmodhi4");
   setLibcallName(RTLIB::UDIVREM_I32, "__udivmodsi4");
 
+  // todo: jiangshan:  callingconv error
   // Several of the runtime library functions use a special calling conv
-  setLibcallCallingConv(RTLIB::SDIVREM_I8, CallingConv::MCS51_BUILTIN);
-  setLibcallCallingConv(RTLIB::SDIVREM_I16, CallingConv::MCS51_BUILTIN);
-  setLibcallCallingConv(RTLIB::UDIVREM_I8, CallingConv::MCS51_BUILTIN);
-  setLibcallCallingConv(RTLIB::UDIVREM_I16, CallingConv::MCS51_BUILTIN);
+  setLibcallCallingConv(RTLIB::SDIVREM_I8, CallingConv::C);
+  setLibcallCallingConv(RTLIB::SDIVREM_I16, CallingConv::C);
+  setLibcallCallingConv(RTLIB::UDIVREM_I8, CallingConv::C);
+  setLibcallCallingConv(RTLIB::UDIVREM_I16, CallingConv::C);
 
   // Trigonometric rtlib functions
   setLibcallName(RTLIB::SIN_F32, "sin");

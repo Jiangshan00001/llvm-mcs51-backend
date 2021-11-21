@@ -34,12 +34,14 @@ public:
 };
 
 MCS51ELFObjectWriter::MCS51ELFObjectWriter(uint8_t OSABI)
-    : MCELFObjectTargetWriter(false, OSABI, ELF::EM_MCS51, true) {}
+    : MCELFObjectTargetWriter(false, OSABI, ELF::EM_IAMCU, true) {}
 
 unsigned MCS51ELFObjectWriter::getRelocType(MCContext &Ctx,
                                           const MCValue &Target,
                                           const MCFixup &Fixup,
                                           bool IsPCRel) const {
+    return ELF::EM_IAMCU;
+#if 0
   MCSymbolRefExpr::VariantKind Modifier = Target.getAccessVariant();
   switch ((unsigned) Fixup.getKind()) {
   case FK_Data_1:
@@ -151,6 +153,7 @@ unsigned MCS51ELFObjectWriter::getRelocType(MCContext &Ctx,
   default:
     llvm_unreachable("invalid fixup kind!");
   }
+#endif
 }
 
 std::unique_ptr<MCObjectTargetWriter> createMCS51ELFObjectWriter(uint8_t OSABI) {

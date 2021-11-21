@@ -11,7 +11,9 @@ namespace llvm {
 
 static unsigned getEFlagsForFeatureSet(const FeatureBitset &Features) {
   unsigned EFlags = 0;
+  EFlags |= ELF::EM_IAMCU;
 
+#if 0
   // Set architecture
   if (Features[MCS51::ELFArchMCS511])
     EFlags |= ELF::EF_MCS51_ARCH_MCS511;
@@ -49,7 +51,7 @@ static unsigned getEFlagsForFeatureSet(const FeatureBitset &Features) {
     EFlags |= ELF::EF_MCS51_ARCH_XMEGA6;
   else if (Features[MCS51::ELFArchXMEGA7])
     EFlags |= ELF::EF_MCS51_ARCH_XMEGA7;
-
+#endif
   return EFlags;
 }
 

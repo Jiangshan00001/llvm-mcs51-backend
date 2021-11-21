@@ -89,7 +89,7 @@ bool MCS51MCExpr::evaluateAsRelocatableImpl(MCValue &Result,
     if (Modifier != MCSymbolRefExpr::VK_None)
       return false;
     if (Kind == VK_MCS51_PM) {
-      Modifier = MCSymbolRefExpr::VK_MCS51_PM;
+      Modifier = MCSymbolRefExpr::VK_X86_ABS8;
     }
 
     Sym = MCSymbolRefExpr::create(&Sym->getSymbol(), Modifier, Context);

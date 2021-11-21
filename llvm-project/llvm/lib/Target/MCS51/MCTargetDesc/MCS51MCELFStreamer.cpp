@@ -22,7 +22,11 @@ using namespace llvm;
 
 void MCS51MCELFStreamer::emitValueForModiferKind(
     const MCSymbol *Sym, unsigned SizeInBytes, SMLoc Loc,
-    MCS51MCExpr::VariantKind ModifierKind) {
+    MCS51MCExpr::VariantKind ModifierKind)
+{
+
+    MCSymbolRefExpr::VariantKind Kind = MCSymbolRefExpr::VK_X86_ABS8;
+#if 0
   MCSymbolRefExpr::VariantKind Kind = MCSymbolRefExpr::VK_MCS51_NONE;
   if (ModifierKind == MCS51MCExpr::VK_MCS51_None) {
     Kind = MCSymbolRefExpr::VK_MCS51_DIFF8;
@@ -36,6 +40,8 @@ void MCS51MCELFStreamer::emitValueForModiferKind(
     Kind = MCSymbolRefExpr::VK_MCS51_HI8;
   else if (ModifierKind == MCS51MCExpr::VK_MCS51_HH8)
     Kind = MCSymbolRefExpr::VK_MCS51_HLO8;
+
+#endif
   MCELFStreamer::emitValue(MCSymbolRefExpr::create(Sym, Kind, getContext()),
                            SizeInBytes, Loc);
 }
