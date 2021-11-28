@@ -24,7 +24,7 @@ jobs:
     steps:    
        
     - name: get psdrive info
-    - run: Get-PSDrive
+      run: Get-PSDrive
     
     - uses: actions/checkout@v2
     - name: get llvm
