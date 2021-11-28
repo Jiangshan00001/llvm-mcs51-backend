@@ -28,13 +28,14 @@ jobs:
     
     - uses: actions/checkout@v2
     - name: get llvm
-      run: git clone --branch llvmorg-13.0.0 --depth 1 https://github.com/llvm/llvm-project.git ./llvm1300
+      run: |
+           mkdir c:\llvm1300
+           git clone --branch llvmorg-13.0.0 --depth 1 https://github.com/llvm/llvm-project.git c:/llvm1300
       
     - name: move mcs51 to llvm tree
       run: |
            ls
-           Copy-Item -Path ./llvm-project/* -Destination ./llvm1300/ -Recurse -Force
-           cd ./llvm1300
+           Copy-Item -Path ./llvm-project/* -Destination c:/llvm1300/ -Recurse -Force
     
     - name: Configure vc
       shell: pwsh
@@ -53,8 +54,9 @@ jobs:
       shell: pwsh
       run:  |
             ls
+            mkdir -p ./llvm1300/llvm
             cd ./llvm1300/llvm
-            cmake -B ./build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/LLVMBIN/ -DLLVM_TARGETS_TO_BUILD=X86  -DLLVM_OPTIMIZED_TABLEGEN=1 -DLLVM_ENABLE_PROJECTS=clang -Thost=x64 -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=MCS51
+            cmake c:/llvm1300/llvm   -B ./build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/LLVMBIN/ -DLLVM_TARGETS_TO_BUILD=X86  -DLLVM_OPTIMIZED_TABLEGEN=1 -DLLVM_ENABLE_PROJECTS=clang -Thost=x64 -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=MCS51
 
     - name: Build
       # Build your program with the given configuration
