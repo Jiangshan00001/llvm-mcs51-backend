@@ -89,12 +89,16 @@ jobs:
       with:
         name: llvm_bin_win
         
+    - name: get psdrive info2
+      run:  | 
+          rm llvm_bin_win/bin/clang++.exe llvm_bin_win/bin/clang-*.exe
+          rm llvm_bin_win/bin/llvm-lto2.exe llvm_bin_win/bin/opt.exe llvm_bin_win/bin/bugpoint.exe llvm_bin_win/bin/c-index-test.exe
     
     - name: Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@4.1.7
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-bin-win # The branch the action should deploy to.
-        FOLDER: 'llvm_bin_win/bin/llc.exe'
+        FOLDER: 'llvm_bin_win/bin/'
         clean: true # Automatically remove deleted files from the deploy branch
         single_commit: true
