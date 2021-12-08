@@ -101,4 +101,4 @@ jobs:
         BRANCH: gh-bin-win # The branch the action should deploy to.
         FOLDER: 'llvm_bin_win/bin/'
         clean: true # Automatically remove deleted files from the deploy branch
-        single_commit: true
+        single-commit: true
